@@ -1,0 +1,15 @@
+export const colors = {
+  primary: '#4A90D9',
+  background: '#F5F6FA',
+  surface: '#FFFFFF',
+  text: '#1A1A2E',
+  textSecondary: '#6B7280',
+  border: '#E5E7EB',
+  running: '#EF4444',
+  cycling: '#F59E0B',
+  swimming: '#3B82F6',
+  gym: '#8B5CF6',
+  progressBackground: '#E5E7EB',
+  success: '#10B981',
+  danger: '#EF4444',
+} as const;
