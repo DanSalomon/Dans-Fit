@@ -3,7 +3,7 @@ import {Goal, WeeklyProgress} from '../types';
 import {ACTIVITY_CONFIGS} from '../constants/exerciseTypes';
 import {getWeekBoundaries} from '../utils/weekUtils';
 
-const USE_MOCK = __DEV__;
+const USE_MOCK = false;
 
 const hc = USE_MOCK
   ? require('../services/mockHealthConnect')

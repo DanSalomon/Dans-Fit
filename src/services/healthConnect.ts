@@ -1,6 +1,7 @@
 import {
   initialize,
   requestPermission,
+  getGrantedPermissions,
   readRecords,
   getSdkStatus,
 } from 'react-native-health-connect';
@@ -24,11 +25,24 @@ export async function checkAvailability(): Promise<boolean> {
 
 export async function requestHealthPermissions(): Promise<boolean> {
   try {
+    // Check if permissions are already granted
+    const existing = await getGrantedPermissions();
+    const hasExercise = existing.some(
+      (p: any) => p.recordType === 'ExerciseSession',
+    );
+    const hasDistance = existing.some(
+      (p: any) => p.recordType === 'Distance',
+    );
+    if (hasExercise && hasDistance) {
+      return true;
+    }
+
+    // Request permissions that are missing
     const granted = await requestPermission([
       {accessType: 'read', recordType: 'ExerciseSession'},
       {accessType: 'read', recordType: 'Distance'},
     ]);
-    return granted.length === 2;
+    return granted.length >= 1;
   } catch {
     return false;
   }
