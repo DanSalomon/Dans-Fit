@@ -11,7 +11,7 @@ import {Goal} from '../types';
 import {useWeeklyProgress} from '../hooks/useWeeklyProgress';
 import {formatWeekRange} from '../utils/weekUtils';
 import {ProgressCard} from '../components/ProgressCard';
-import {ProgressBar} from '../components/ProgressBar';
+import {DonutChart} from '../components/DonutChart';
 import {EmptyState} from '../components/EmptyState';
 import {colors} from '../constants/colors';
 
@@ -60,17 +60,24 @@ export function DashboardScreen({goals}: DashboardScreenProps) {
       <Text style={styles.weekRange}>{formatWeekRange()}</Text>
 
       <View style={styles.overallCard}>
-        <View style={styles.overallHeader}>
-          <Text style={styles.overallLabel}>Weekly Progress</Text>
-          <Text style={styles.overallPercent}>
-            {Math.round(overallProgress * 100)}%
-          </Text>
+        <Text style={styles.overallTitle}>Weekly Progress</Text>
+        <View style={styles.donutRow}>
+          <DonutChart
+            size={140}
+            strokeWidth={14}
+            progress={overallProgress}
+            color={colors.primary}>
+            <Text style={styles.donutPercent}>
+              {Math.round(overallProgress * 100)}%
+            </Text>
+          </DonutChart>
+          <View style={styles.overallStats}>
+            <Text style={styles.statNumber}>
+              {progress.filter(p => p.current >= p.target).length}
+            </Text>
+            <Text style={styles.statLabel}>of {progress.length} goals{'\n'}completed</Text>
+          </View>
         </View>
-        <ProgressBar progress={overallProgress} color={colors.primary} />
-        <Text style={styles.overallSub}>
-          {progress.filter(p => p.current >= p.target).length} of{' '}
-          {progress.length} goals completed
-        </Text>
       </View>
 
       {error && (
@@ -102,35 +109,44 @@ const styles = StyleSheet.create({
   },
   overallCard: {
     backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    elevation: 2,
+    borderRadius: 16,
+    padding: 24,
+    marginBottom: 20,
+    elevation: 3,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
   },
-  overallHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  overallLabel: {
-    fontSize: 16,
+  overallTitle: {
+    fontSize: 18,
     fontWeight: '700',
     color: colors.text,
+    marginBottom: 20,
   },
-  overallPercent: {
-    fontSize: 18,
+  donutRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  donutPercent: {
+    fontSize: 28,
     fontWeight: '800',
     color: colors.primary,
   },
-  overallSub: {
-    fontSize: 13,
+  overallStats: {
+    alignItems: 'center',
+  },
+  statNumber: {
+    fontSize: 36,
+    fontWeight: '800',
+    color: colors.text,
+  },
+  statLabel: {
+    fontSize: 14,
     color: colors.textSecondary,
-    marginTop: 8,
+    textAlign: 'center',
+    lineHeight: 20,
   },
   errorBanner: {
     backgroundColor: colors.danger + '15',
