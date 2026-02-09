@@ -1,5 +1,5 @@
 import {useState, useCallback} from 'react';
-import {Goal, WeeklyProgress} from '../types';
+import {Goal, WeeklyProgress, ActivityDetail} from '../types';
 import {ACTIVITY_CONFIGS} from '../constants/exerciseTypes';
 import {getWeekBoundaries} from '../utils/weekUtils';
 
@@ -58,25 +58,40 @@ export function useWeeklyProgress(goals: Goal[]) {
         );
 
         let current = 0;
+        const activities: ActivityDetail[] = [];
 
         if (config.unit === 'km') {
-          // For distance-based activities, query distance per session time range
           for (const session of matchingSessions) {
             const km = await hc.readDistanceForTimeRange(
               session.startTime,
               session.endTime,
             );
             current += km;
+            activities.push({
+              date: session.startTime,
+              startTime: session.startTime,
+              endTime: session.endTime,
+              value: Math.round(km * 10) / 10,
+            });
           }
         } else {
-          // For time-based activities (gym), compute duration from timestamps
           for (const session of matchingSessions) {
             const startMs = new Date(session.startTime).getTime();
             const endMs = new Date(session.endTime).getTime();
             const hours = (endMs - startMs) / (1000 * 60 * 60);
             current += hours;
+            activities.push({
+              date: session.startTime,
+              startTime: session.startTime,
+              endTime: session.endTime,
+              value: Math.round(hours * 10) / 10,
+            });
           }
         }
+
+        activities.sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+        );
 
         results.push({
           goalId: goal.id,
@@ -84,6 +99,7 @@ export function useWeeklyProgress(goals: Goal[]) {
           current: Math.round(current * 10) / 10,
           target: goal.target,
           unit: config.unit,
+          activities,
         });
       }
 

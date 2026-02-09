@@ -17,12 +17,20 @@ export interface ActivityConfig {
   icon: string;
 }
 
+export interface ActivityDetail {
+  date: string;
+  startTime: string;
+  endTime: string;
+  value: number; // km or hours
+}
+
 export interface WeeklyProgress {
   goalId: string;
   category: ActivityCategory;
   current: number;
   target: number;
   unit: MeasurementUnit;
+  activities: ActivityDetail[];
 }
 
 export interface ExerciseSessionRecord {
