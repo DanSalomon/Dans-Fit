@@ -47,6 +47,11 @@ export interface DistanceRecord {
   };
 }
 
+export interface WeekPlan {
+  weekKey: string;
+  days: Record<string, ActivityCategory[]>;
+}
+
 export interface HistoryWeekData {
   weekKey: string;
   dateRange: string;

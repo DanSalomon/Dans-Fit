@@ -2,17 +2,20 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Text} from 'react-native';
 import {DashboardScreen} from '../screens/DashboardScreen';
+import {WeekPlanScreen} from '../screens/WeekPlanScreen';
 import {HistoryScreen} from '../screens/HistoryScreen';
 import {SettingsScreen} from '../screens/SettingsScreen';
 import {useGoals} from '../hooks/useGoals';
+import {useWeekPlan} from '../hooks/useWeekPlan';
 import {colors} from '../constants/colors';
 
 const Tab = createBottomTabNavigator();
 
 export function AppNavigator() {
   const {goals, loading, addGoal, editGoal, removeGoal} = useGoals();
+  const {plan, loading: planLoading, toggleActivity} = useWeekPlan();
 
-  if (loading) {
+  if (loading || planLoading) {
     return null;
   }
 
@@ -46,6 +49,20 @@ export function AppNavigator() {
           ),
         }}>
         {() => <DashboardScreen goals={goals} />}
+      </Tab.Screen>
+      <Tab.Screen
+        name="Plan"
+        options={{
+          title: 'Plan',
+          tabBarIcon: ({color, size}) => (
+            <Text style={{fontSize: size, color}}>📋</Text>
+          ),
+        }}>
+        {() =>
+          plan ? (
+            <WeekPlanScreen plan={plan} onToggleActivity={toggleActivity} />
+          ) : null
+        }
       </Tab.Screen>
       <Tab.Screen
         name="History"
