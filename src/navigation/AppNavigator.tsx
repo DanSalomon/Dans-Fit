@@ -2,6 +2,7 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Text} from 'react-native';
 import {DashboardScreen} from '../screens/DashboardScreen';
+import {HistoryScreen} from '../screens/HistoryScreen';
 import {SettingsScreen} from '../screens/SettingsScreen';
 import {useGoals} from '../hooks/useGoals';
 import {colors} from '../constants/colors';
@@ -45,6 +46,16 @@ export function AppNavigator() {
           ),
         }}>
         {() => <DashboardScreen goals={goals} />}
+      </Tab.Screen>
+      <Tab.Screen
+        name="History"
+        options={{
+          title: 'History',
+          tabBarIcon: ({color, size}) => (
+            <Text style={{fontSize: size, color}}>📅</Text>
+          ),
+        }}>
+        {() => <HistoryScreen goals={goals} />}
       </Tab.Screen>
       <Tab.Screen
         name="Settings"

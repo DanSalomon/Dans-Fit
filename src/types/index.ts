@@ -46,3 +46,11 @@ export interface DistanceRecord {
     inKilometers: number;
   };
 }
+
+export interface HistoryWeekData {
+  weekKey: string;
+  dateRange: string;
+  startDate: string;
+  progress: WeeklyProgress[];
+  overallPercent: number;
+}

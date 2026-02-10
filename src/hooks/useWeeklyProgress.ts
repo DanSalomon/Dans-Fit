@@ -1,7 +1,7 @@
 import {useState, useCallback} from 'react';
-import {Goal, WeeklyProgress, ActivityDetail} from '../types';
-import {ACTIVITY_CONFIGS} from '../constants/exerciseTypes';
+import {Goal, WeeklyProgress} from '../types';
 import {getWeekBoundaries} from '../utils/weekUtils';
+import {computeProgressForSessions} from '../utils/computeProgress';
 
 const USE_MOCK = false;
 
@@ -48,60 +48,7 @@ export function useWeeklyProgress(goals: Goal[]) {
 
       const sessions = await hc.readExerciseSessions(startTime, endTime);
 
-      const results: WeeklyProgress[] = [];
-
-      for (const goal of goals) {
-        const config = ACTIVITY_CONFIGS[goal.category];
-        const matchingSessions = sessions.filter(
-          (s: {exerciseType: number}) =>
-            config.exerciseTypes.includes(s.exerciseType),
-        );
-
-        let current = 0;
-        const activities: ActivityDetail[] = [];
-
-        if (config.unit === 'km') {
-          for (const session of matchingSessions) {
-            const km = await hc.readDistanceForTimeRange(
-              session.startTime,
-              session.endTime,
-            );
-            current += km;
-            activities.push({
-              date: session.startTime,
-              startTime: session.startTime,
-              endTime: session.endTime,
-              value: Math.round(km * 10) / 10,
-            });
-          }
-        } else {
-          for (const session of matchingSessions) {
-            const startMs = new Date(session.startTime).getTime();
-            const endMs = new Date(session.endTime).getTime();
-            const hours = (endMs - startMs) / (1000 * 60 * 60);
-            current += hours;
-            activities.push({
-              date: session.startTime,
-              startTime: session.startTime,
-              endTime: session.endTime,
-              value: Math.round(hours * 10) / 10,
-            });
-          }
-        }
-
-        activities.sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-        );
-
-        results.push({
-          goalId: goal.id,
-          category: goal.category,
-          current: Math.round(current * 10) / 10,
-          target: goal.target,
-          unit: config.unit,
-          activities,
-        });
-      }
+      const results = await computeProgressForSessions(goals, sessions, hc);
 
       setProgress(results);
     } catch (e: any) {
