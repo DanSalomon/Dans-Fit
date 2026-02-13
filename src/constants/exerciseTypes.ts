@@ -14,7 +14,7 @@ export const ACTIVITY_CONFIGS: Record<ActivityCategory, ActivityConfig> = {
     category: 'cycling',
     label: 'Cycling / Bike',
     unit: 'km',
-    exerciseTypes: [8, 9, 10], // biking, biking stationary, mountain biking
+    exerciseTypes: [8, 9, 10], // biking, biking stationary, boot camp
     color: colors.cycling,
     icon: '🚴',
   },
