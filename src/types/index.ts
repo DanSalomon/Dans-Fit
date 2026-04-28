@@ -58,4 +58,37 @@ export interface HistoryWeekData {
   startDate: string;
   progress: WeeklyProgress[];
   overallPercent: number;
+  gymSessions?: GymSession[];
+}
+
+export interface ExerciseCatalogEntry {
+  id: string;
+  name: string;
+  image: number;
+}
+
+export interface GymExercise {
+  id: string;
+  catalogId: string;
+  sets: number;
+  reps: number;
+  weight: number;
+}
+
+export interface GymWorkout {
+  id: string;
+  name: string;
+  exercises: GymExercise[];
+  updatedAt: string;
+}
+
+export interface GymSession {
+  id: string;
+  workoutId: string;
+  workoutName: string;
+  startTime: string;
+  endTime: string;
+  durationSeconds: number;
+  exercises: GymExercise[];
+  completedSets: string[];
 }

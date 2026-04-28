@@ -8,18 +8,19 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
-import {Goal, HistoryWeekData} from '../types';
+import {Goal, GymSession, HistoryWeekData} from '../types';
 import {useHistoricalProgress} from '../hooks/useHistoricalProgress';
 import {HistoryWeekCard} from '../components/HistoryWeekCard';
 import {colors} from '../constants/colors';
 
 interface HistoryScreenProps {
   goals: Goal[];
+  gymSessions?: GymSession[];
 }
 
-export function HistoryScreen({goals}: HistoryScreenProps) {
+export function HistoryScreen({goals, gymSessions = []}: HistoryScreenProps) {
   const {weeks, loading, loadingMore, error, loadInitial, loadMore, refresh} =
-    useHistoricalProgress(goals);
+    useHistoricalProgress(goals, gymSessions);
 
   useEffect(() => {
     loadInitial();

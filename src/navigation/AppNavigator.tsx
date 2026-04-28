@@ -5,8 +5,11 @@ import {DashboardScreen} from '../screens/DashboardScreen';
 import {WeekPlanScreen} from '../screens/WeekPlanScreen';
 import {HistoryScreen} from '../screens/HistoryScreen';
 import {SettingsScreen} from '../screens/SettingsScreen';
+import {GymScreen} from '../screens/GymScreen';
 import {useGoals} from '../hooks/useGoals';
 import {useWeekPlan} from '../hooks/useWeekPlan';
+import {useGymWorkouts} from '../hooks/useGymWorkouts';
+import {useGymSessions} from '../hooks/useGymSessions';
 import {colors} from '../constants/colors';
 
 const Tab = createBottomTabNavigator();
@@ -14,8 +17,16 @@ const Tab = createBottomTabNavigator();
 export function AppNavigator() {
   const {goals, loading, addGoal, editGoal, removeGoal} = useGoals();
   const {plan, loading: planLoading, toggleActivity} = useWeekPlan();
+  const {
+    workouts,
+    loading: workoutsLoading,
+    addWorkout,
+    updateWorkout,
+    removeWorkout,
+  } = useGymWorkouts();
+  const {sessions, loading: sessionsLoading, appendSession} = useGymSessions();
 
-  if (loading || planLoading) {
+  if (loading || planLoading || workoutsLoading || sessionsLoading) {
     return null;
   }
 
@@ -65,6 +76,25 @@ export function AppNavigator() {
         }
       </Tab.Screen>
       <Tab.Screen
+        name="Gym"
+        options={{
+          title: 'Gym',
+          tabBarIcon: ({color, size}) => (
+            <Text style={{fontSize: size, color}}>🏋️</Text>
+          ),
+        }}>
+        {() => (
+          <GymScreen
+            workouts={workouts}
+            sessions={sessions}
+            onAddWorkout={addWorkout}
+            onUpdateWorkout={updateWorkout}
+            onRemoveWorkout={removeWorkout}
+            onAppendSession={appendSession}
+          />
+        )}
+      </Tab.Screen>
+      <Tab.Screen
         name="History"
         options={{
           title: 'History',
@@ -72,7 +102,7 @@ export function AppNavigator() {
             <Text style={{fontSize: size, color}}>📅</Text>
           ),
         }}>
-        {() => <HistoryScreen goals={goals} />}
+        {() => <HistoryScreen goals={goals} gymSessions={sessions} />}
       </Tab.Screen>
       <Tab.Screen
         name="Settings"
