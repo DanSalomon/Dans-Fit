@@ -41,6 +41,11 @@ export const EXERCISE_CATALOG: ExerciseCatalogEntry[] = [
     name: 'Decline Crunch (Weighted)',
     image: require('../../assets/exercises/decline-crunch-weighted.png'),
   },
+  {
+    id: 'seated-cable-row',
+    name: 'Seated Cable Row',
+    image: require('../../assets/exercises/seated-cable-row.png'),
+  },
 ];
 
 export const EXERCISE_BY_ID: Record<string, ExerciseCatalogEntry> = Object.fromEntries(
