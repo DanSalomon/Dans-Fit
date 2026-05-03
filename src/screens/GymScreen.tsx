@@ -11,6 +11,8 @@ import {GymWorkoutCard} from '../components/GymWorkoutCard';
 import {WorkoutBuilder} from '../components/WorkoutBuilder';
 import {WorkoutRunner} from '../components/WorkoutRunner';
 import {clearHistoryCache} from '../storage/historyCacheStorage';
+import {writeStrengthSession} from '../services/healthConnect';
+import {EXERCISE_BY_ID} from '../constants/exerciseCatalog';
 import {colors} from '../constants/colors';
 
 interface GymScreenProps {
@@ -82,6 +84,21 @@ export function GymScreen({
         updatedAt: new Date().toISOString(),
       });
     }
+
+    // Mirror the session into Health Connect so it counts toward the gym goal.
+    const notes = session.exercises
+      .map(ex => {
+        const name = EXERCISE_BY_ID[ex.catalogId]?.name ?? 'Exercise';
+        return `${name}: ${ex.sets}x${ex.reps} @ ${ex.weight}kg`;
+      })
+      .join('\n');
+    writeStrengthSession({
+      startTime: session.startTime,
+      endTime: session.endTime,
+      title: session.workoutName,
+      notes,
+    }).catch(() => {});
+
     await clearHistoryCache();
     setRunningWorkout(null);
   };
